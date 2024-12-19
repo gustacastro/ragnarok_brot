@@ -1,0 +1,19 @@
+[
+  {
+    "Name": "Novo Perfil",
+    "Projects": [
+      {
+        "Path": "src\\login\\login-server.vcxproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "src\\char\\char-server.vcxproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "src\\map\\map-server.vcxproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]
