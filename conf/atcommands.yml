@@ -33,6 +33,12 @@ Header:
   Version: 1
 
 Body:
+  - Command: whosell
+    Aliases:
+      - ws
+    Help: |
+      Params: <command>
+      Mostra quem vende determinado item.
   - Command: help
     Aliases:
       - h

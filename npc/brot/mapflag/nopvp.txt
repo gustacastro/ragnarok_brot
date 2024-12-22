@@ -91,7 +91,7 @@ morocc	mapflag	pvp	off
 mosk_in	mapflag	pvp	off
 nif_in	mapflag	pvp	off
 payon_in01	mapflag	pvp	off
-payon_in02	mapflag	pvp	off
+pa2_in02	mapflag	pvp	off
 payon_in03	mapflag	pvp	off
 payon	mapflag	pvp	off
 pay_arche	mapflag	pvp	off

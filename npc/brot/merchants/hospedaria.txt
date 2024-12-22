@@ -29,11 +29,12 @@ geffen_in,70,64,5	script	Empregada da Estalagem	53,{
 }
 
 //======================= Payon ======================================
-pa2_in01,132,62,5	script	Estalajadeira#Ahee	53,{
+/* pa2_in01,132,62,5	script	Estalajadeira#Ahee	53,{
 
 	callfunc "F_InnMaid","[Funcionária Ahee]","Estalagem da cidade de Payon","pa2_in01",136,61;
 	warp "pa2_in01",132,11; end;
 }
+*/
 
 //======================== Morocc ====================================
 // Nordeste --------------------------

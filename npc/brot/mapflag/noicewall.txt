@@ -43,7 +43,7 @@
 //morocc	mapflag	noicewall
 //mosk_in	mapflag	noicewall
 //payon_in01	mapflag	noicewall
-//payon_in02	mapflag	noicewall
+//pa2_in02	mapflag	noicewall
 //payon_in03	mapflag	noicewall
 //payon	mapflag	noicewall
 //pay_arche	mapflag	noicewall

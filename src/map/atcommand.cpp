@@ -237,6 +237,157 @@ static const char* atcommand_help_string( const char* command ){
 	return info->help.c_str();
 }
 
+ACMD_FUNC(whosell) {
+	char item_name[100];
+	int item_id = 0, j, count = 0, sat_num = 0;
+	int s_type = 1; // search bitmask: 0-name,1-id, 2-card, 4-refine
+	int refine = 0, card_id = 0;
+	bool flag = 1; // place dot on the minimap?
+	struct map_session_data* pl_sd;
+	struct s_mapiterator* iter;
+	unsigned int MinPrice = battle_config.vending_max_value, MaxPrice = 0;
+	static char atcmd_output[CHAT_SIZE_MAX];
+	struct item item_tmp = {};
+	
+		std::shared_ptr<item_data> item_data = item_db.searchname(item_name);
+	
+		if (!*message) {
+		clif_displaymessage(fd, "Use: @whosell <+refine> <name or id>[card id]");
+		return -1;
+		
+	}
+	 if (sscanf(message, "+%d %d[%d]", &refine, &item_id, &card_id) == 3) {
+		s_type = 1 + 2 + 4;
+		
+	}
+	 else if (sscanf(message, "+%d %d", &refine, &item_id) == 2) {
+		s_type = 1 + 4;
+		
+	}
+	 else if (sscanf(message, "+%d [%d]", &refine, &card_id) == 2) {
+		s_type = 2 + 4;
+		
+	}
+	 else if (sscanf(message, "%d[%d]", &item_id, &card_id) == 2) {
+		s_type = 1 + 2;
+		
+	}
+	 else if (sscanf(message, "[%d]", &card_id) == 1) {
+		s_type = 2;
+		
+	}
+	 else if (sscanf(message, "+%d", &refine) == 1) {
+		s_type = 4;
+		
+	}
+	 else if (sscanf(message, "%d", &item_id) == 1 && item_id == atoi(message)) {
+		s_type = 1;
+		
+	}
+	 else if (sscanf(message, "%99[^\n]", item_name) == 1) {
+		s_type = 1;
+		if ((item_data = item_db.searchname(item_name)) == NULL) {
+			clif_displaymessage(fd, "Not found item with this name");
+			return -1;
+			
+		}
+		 item_id = item_data->nameid;
+		
+	}
+	else {
+		clif_displaymessage(fd, "Use: @whosell <item_id> or @whosell <name>");
+		return -1;
+		
+	}
+	
+			//check card
+		if (s_type & 2 && ((item_data = item_db.find(card_id)) == NULL || item_data->type != IT_CARD)) {
+		clif_displaymessage(fd, "Not found a card with than ID");
+		return -1;
+		
+	}
+		//check item
+		if (s_type & 1 && (item_data = item_db.find(item_id)) == NULL) {
+		clif_displaymessage(fd, "Not found an item with than ID");
+		return -1;
+		
+	}
+		//check refine
+		if (s_type & 4) {
+		if (refine < 0 || refine>10) {
+			clif_displaymessage(fd, "Refine out of bounds: 0 - 10");
+			return -1;
+			
+		}
+				/*if(item_data->type != IT_WEAPON && item_data->type != IT_ARMOR){
+					clif_displaymessage(fd, "Use refine only with weapon or armor");
+					return -1;
+				}*/
+			
+	}
+	 iter = mapit_getallusers();
+	for (pl_sd = (TBL_PC*)mapit_first(iter); mapit_exists(iter); pl_sd = (TBL_PC*)mapit_next(iter)) {
+		if (pl_sd->vender_id) {	 // check if player is vending
+			for (j = 0; j < pl_sd->vend_num; j++) {
+				if ((item_data = item_db.find(pl_sd->cart.u.items_cart[pl_sd->vending[j].index].nameid)) == NULL)
+					 continue;
+				if (s_type & 1 && pl_sd->cart.u.items_cart[pl_sd->vending[j].index].nameid != item_id)
+					 continue;
+				if (s_type & 2 && ((item_data->type != IT_ARMOR && item_data->type != IT_WEAPON) ||
+					(pl_sd->cart.u.items_cart[pl_sd->vending[j].index].card[0] != card_id &&
+						pl_sd->cart.u.items_cart[pl_sd->vending[j].index].card[1] != card_id &&
+						pl_sd->cart.u.items_cart[pl_sd->vending[j].index].card[2] != card_id &&
+						pl_sd->cart.u.items_cart[pl_sd->vending[j].index].card[3] != card_id)))
+					 continue;
+				if (s_type & 4 && ((item_data->type != IT_ARMOR && item_data->type != IT_WEAPON) || pl_sd->cart.u.items_cart[pl_sd->vending[j].index].refine != refine))
+					 continue;
+				item_tmp.nameid = item_data->nameid;
+				if (item_data->type == IT_ARMOR) {
+					item_tmp.refine = pl_sd->cart.u.items_cart[pl_sd->vending[j].index].refine;
+					item_tmp.card[0] = pl_sd->cart.u.items_cart[pl_sd->vending[j].index].card[0];
+					
+				}
+				else if (item_data->type == IT_WEAPON) {
+					item_tmp.refine = pl_sd->cart.u.items_cart[pl_sd->vending[j].index].refine;
+					item_tmp.card[0] = pl_sd->cart.u.items_cart[pl_sd->vending[j].index].card[0];
+					item_tmp.card[1] = pl_sd->cart.u.items_cart[pl_sd->vending[j].index].card[1];
+					item_tmp.card[2] = pl_sd->cart.u.items_cart[pl_sd->vending[j].index].card[2];
+					item_tmp.card[3] = pl_sd->cart.u.items_cart[pl_sd->vending[j].index].card[3];
+					
+				}
+				 snprintf(atcmd_output, CHAT_SIZE_MAX, "%s - Price: %uz - Amount: %d - %s %d,%d - %s"
+					 , item_db.create_item_link(item_tmp).c_str()
+					 , pl_sd->vending[j].value
+					 , pl_sd->vending[j].amount
+					 , mapindex_id2name(pl_sd->mapindex)
+					 , pl_sd->bl.x, pl_sd->bl.y
+					 , pl_sd->message);
+				if (pl_sd->vending[j].value < MinPrice) MinPrice = pl_sd->vending[j].value;
+				if (pl_sd->vending[j].value > MaxPrice) MaxPrice = pl_sd->vending[j].value;
+				clif_displaymessage(fd, atcmd_output);
+				count++;
+				flag = 1;
+				
+			}
+			 if (flag && pl_sd->mapindex == sd->mapindex) {
+				 clif_viewpoint(*sd, 1, 1, pl_sd->bl.x, pl_sd->bl.y, ++sat_num, 0xFFFFFF);
+				 flag = 0;
+			}
+		}
+		
+	}
+	 mapit_free(iter);
+	if (count > 0) {
+		snprintf(atcmd_output, CHAT_SIZE_MAX, "Found %d entries.", count);
+		clif_displaymessage(fd, atcmd_output);
+		
+	}
+	else
+		 clif_displaymessage(fd, "Nobody is selling it now.");
+	
+		return 0;
+}
+
 
 /*==========================================
  * @send (used for testing packet sends from the client)
@@ -6546,48 +6697,61 @@ ACMD_FUNC(changelook)
  * Turns on/off Autotrade for a specific player
  *------------------------------------------*/
 ACMD_FUNC(autotrade) {
-	nullpo_retr(-1, sd);
+    nullpo_retr(-1, sd);
 
-	if( map_getmapflag(sd->bl.m, MF_AUTOTRADE) != battle_config.autotrade_mapflag ) {
-		clif_displaymessage(fd, msg_txt(sd,1179)); // Autotrade is not allowed on this map.
+    if( map_getmapflag(sd->bl.m, MF_AUTOTRADE) != battle_config.autotrade_mapflag ) {
+        clif_displaymessage(fd, msg_txt(sd,1179)); // Autotrade is not allowed on this map.
+        return -1;
+    }
+
+    if( pc_isdead(sd) ) {
+        clif_displaymessage(fd, msg_txt(sd,1180)); // You cannot autotrade when dead.
+        return -1;
+    }
+
+    if( !sd->state.vending && !sd->state.buyingstore ) { //check if player is vending or buying
+        clif_displaymessage(fd, msg_txt(sd,549)); // "You should have a shop open to use @autotrade."
+        return -1;
+    }
+
+    sd->state.autotrade = 1;
+
+	// Atualizar o campo "autotrade" no banco de dados
+
+	SqlStmt stmt{ *logmysql_handle };
+
+	if (SQL_SUCCESS != stmt.Prepare("UPDATE `char` SET `autotrade` = 1 WHERE `char_id` = %d", sd->status.char_id)
+		|| SQL_SUCCESS != stmt.Execute()) {
+		SqlStmt_ShowDebug(stmt);
+		ShowError("Failed to update autotrade field in database for char_id: %d\n", sd->status.char_id);
 		return -1;
 	}
 
-	if( pc_isdead(sd) ) {
-		clif_displaymessage(fd, msg_txt(sd,1180)); // You cannot autotrade when dead.
-		return -1;
-	}
+    if (battle_config.autotrade_monsterignore)
+        sd->state.block_action |= PCBLOCK_IMMUNE;
 
-	if( !sd->state.vending && !sd->state.buyingstore ) { //check if player is vending or buying
-		clif_displaymessage(fd, msg_txt(sd,549)); // "You should have a shop open to use @autotrade."
-		return -1;
-	}
+    if( sd->state.vending ){
+        vending_update(*sd);
+    }else if( sd->state.buyingstore ){
+        buyingstore_update(*sd);
+    }
 
-	sd->state.autotrade = 1;
-	if (battle_config.autotrade_monsterignore)
-		sd->state.block_action |= PCBLOCK_IMMUNE;
+    if( battle_config.at_timeout ) {
+        int32 timeout = atoi(message);
+        status_change_start(nullptr,&sd->bl, SC_AUTOTRADE, 10000, 0, 0, 0, 0, ((timeout > 0) ? min(timeout,battle_config.at_timeout) : battle_config.at_timeout) * 60000, SCSTART_NONE);
+    }
 
-	if( sd->state.vending ){
-		vending_update(*sd);
-	}else if( sd->state.buyingstore ){
-		buyingstore_update(*sd);
-	}
+    if (battle_config.at_logout_event)
+        npc_script_event( *sd, NPCE_LOGOUT );
 
-	if( battle_config.at_timeout ) {
-		int32 timeout = atoi(message);
-		status_change_start(nullptr,&sd->bl, SC_AUTOTRADE, 10000, 0, 0, 0, 0, ((timeout > 0) ? min(timeout,battle_config.at_timeout) : battle_config.at_timeout) * 60000, SCSTART_NONE);
-	}
+    channel_pcquit(sd,0xF); //leave all chan
+    clif_authfail_fd(sd->fd, 15);
 
-	if (battle_config.at_logout_event)
-		npc_script_event( *sd, NPCE_LOGOUT );
+    chrif_save(sd, CSAVE_AUTOTRADE);
 
-	channel_pcquit(sd,0xF); //leave all chan
-	clif_authfail_fd(sd->fd, 15);
-
-	chrif_save(sd, CSAVE_AUTOTRADE);
-
-	return 0;
+    return 0;
 }
+
 
 /*==========================================
  * @changegm by durf (changed by Lupus)
@@ -11039,6 +11203,7 @@ void atcommand_basecommands(void) {
 	AtCommandInfo atcommand_base[] = {
 #include <custom/atcommand_def.inc>
 		ACMD_DEF2R("warp", mapmove, ATCMD_NOCONSOLE),
+		ACMD_DEF(whosell),
 		ACMD_DEF(where),
 		ACMD_DEF(jumpto),
 		ACMD_DEF(jump),

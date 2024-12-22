@@ -1,0 +1,56 @@
+//===== Cronus Script ========================================
+//= Curandeiro
+//===== Por: =================================================
+//= Euphy
+//===== Versão Atual: ========================================
+//= 1.0a
+//===== Descrição: ===========================================
+//= Recupera HP e SP, dá buffs e com opção de delay
+//===== Changelog: ===========================================
+//= 1.0 First version. [Euphy]
+//= 1.0a Traduzido. [mkbu95]
+//============================================================
+
+-	script	Curandeiro	-1,{
+	
+	set .@Price,	0;	// Zeny necessário para curar. 0 = Gratuito
+	set .@Buffs,	1;	// Dar buffs básicos ao jogador? (1 = Sim/0 = Não)
+	set .@Delay,	5;	// Delay para usar o npc, em segundos. 0 = Desativado
+
+	callfunc "F_ClearGarbage", 0;
+	if (@HD > gettimetick(2)) end;
+	if (.@Price) {
+		message strcharinfo(0),"A cura custa "+.@Price+" Zeny.";
+		if (Zeny < .@Price) end;
+		if(select("^0055FFCurar^000000:^777777Cancelar^000000")==2) close;
+		set Zeny, Zeny-.@Price;
+	}
+	specialeffect2 313; percentheal 100,100;
+	// if (gethominfo(1)) healhomun 100, 100;
+
+	if (.@Buffs && (getgroupid() > 0)) {
+		specialeffect2 37; sc_start SC_INCREASEAGI,1200000,5;
+		specialeffect2 42; sc_start SC_BLESSING,1200000,5;
+	}
+	if (.@Delay) set @HD, gettimetick(2)+.@Delay;
+}
+
+prontera,150,184,5	duplicate(Curandeiro)	Curandeiro#pront	91
+morocc,159,96,5	duplicate(Curandeiro)	Curandeiro#moc	91
+ayothaya,155,111,5	duplicate(Curandeiro)	Curandeiro#ayo	91
+geffen,121,61,5	duplicate(Curandeiro)	Curandeiro#gef	91
+umbala,94,162,5	duplicate(Curandeiro)	Curandeiro#umb	91
+payo2,83,124,5	duplicate(Curandeiro)	Curandeiro#pay	91
+alberta,185,144,5	duplicate(Curandeiro)	Curandeiro#alb	91
+aldebaran,134,123,5	duplicate(Curandeiro)	Curandeiro#alde	91
+izlude,125,118,5	duplicate(Curandeiro)	Curandeiro#izl	91
+xmas,149,136,5	duplicate(Curandeiro)	Curandeiro#xmas	91
+comodo,188,162,5	duplicate(Curandeiro)	Curandeiro#com	91
+amatsu,200,80,5	duplicate(Curandeiro)	Curandeiro#ama	91
+gonryun,164,130,5	duplicate(Curandeiro)	Curandeiro#gon	91
+yuno,152,186,5	duplicate(Curandeiro)	Curandeiro#yuno	91
+niflheim,188,180,5	duplicate(Curandeiro)	Curandeiro#nif	91
+louyang,225,103,5	duplicate(Curandeiro)	Curandeiro#lou	91
+rachel,131,117,5	duplicate(Curandeiro)	Curandeiro#rac	91
+veins,212,124,5	duplicate(Curandeiro)	Curandeiro#vei	91
+moscovia,221,192,5	duplicate(Curandeiro)	Curandeiro#mosc	91

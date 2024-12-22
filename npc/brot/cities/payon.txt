@@ -183,7 +183,7 @@ pa2_in01,104,182,2	script	Garçonete	90,{
 	next;
 	mes "[Moça do bar]";
 	mes "Mas então, o que eu posso fazer por você?";
-	menu "Você já ouviu falar de zumbis?",L0,"Eu gostaria que sua vó lesse minha sorte.",L1,"Queo uma cerveja!",LEnd;
+	menu "Você já ouviu falar de zumbis?",L0,"Eu gostaria que sua vó lesse minha sorte.",L1,"Quero uma cerveja!",LEnd;
 
 	L0:
 		mes "[Moça do bar]";
@@ -226,6 +226,11 @@ pa2_in01,104,182,2	script	Garçonete	90,{
 			mes "Tenha um bom dia.";
 			mes "... Aah... Eu preciso mudar de vida...";
 			close;
+	LEnd:
+		next;
+		mes "[Moça do bar]";
+		mes "Falou!";
+		close;
 }
 
 pa2_in01,129,140,4	script	Guarda#pay03	105,{

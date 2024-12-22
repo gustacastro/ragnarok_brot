@@ -1,0 +1,10 @@
+-	script	LoginEvent	-1,{
+	end;
+
+OnPCLoginEvent:
+    if(getgroupid() > 20) atcommand "@hide";
+    
+    query_sql("UPDATE `char` SET `autotrade` = 0 WHERE `char_id` =" + getcharid(0));
+
+    end;
+}

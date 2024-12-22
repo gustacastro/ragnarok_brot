@@ -54,7 +54,7 @@ nif_in	mapflag	nopenalty
 pay_arche	mapflag	nopenalty
 payon	mapflag	nopenalty
 payon_in01	mapflag	nopenalty
-payon_in02	mapflag	nopenalty
+pa2_in02	mapflag	nopenalty
 payon_in03	mapflag	nopenalty
 prontera	mapflag	nopenalty
 prt_are_in	mapflag	nopenalty

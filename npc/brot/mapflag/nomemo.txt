@@ -50,7 +50,7 @@ niflheim	mapflag	nomemo
 nif_in	mapflag	nomemo
 pay_arche	mapflag	nomemo
 payon_in01	mapflag	nomemo
-payon_in02	mapflag	nomemo
+pa2_in02	mapflag	nomemo
 payon_in03	mapflag	nomemo
 prt_castle	mapflag	nomemo
 prt_church	mapflag	nomemo

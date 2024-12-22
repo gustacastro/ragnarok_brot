@@ -65,7 +65,7 @@ moscovia	mapflag	nobranch
 mosk_in	mapflag	nobranch
 nif_in	mapflag	nobranch
 payon_in01	mapflag	nobranch
-payon_in02	mapflag	nobranch
+pa2_in02	mapflag	nobranch
 payon_in03	mapflag	nobranch
 prt_castle	mapflag	nobranch
 prt_church	mapflag	nobranch

@@ -1,0 +1,18 @@
+//= otRag ??
+ama_dun01,0,0,0,0	monster	Shinobi	1401,5
+ama_dun01,0,0,0,0	monster	Soldado Atirador	1403,40
+ama_dun01,0,0,0,0	monster	Boneco de Miyabi	1404,60
+
+ama_dun02,0,0,0,0	monster	Horong	1129,5
+ama_dun02,0,0,0,0	monster	Papel	1375,3
+ama_dun02,0,0,0,0	monster	Shinobi	1401,2
+ama_dun02,0,0,0,0	monster	Sapo Venenoso	1402,8
+ama_dun02,0,0,0,0	monster	Soldado Atirador	1403,8
+ama_dun02,0,0,0,0	monster	Boneco de Miyabi	1404,3
+
+ama_dun03,0,0,0,0	monster	Mímico	1191,10
+ama_dun03,0,0,0,0	monster	Papel	1375,5
+ama_dun03,0,0,0,0	monster	Shinobi	1401,10
+ama_dun03,0,0,0,0	monster	Soldado Atirador	1403,20
+ama_dun03,0,0,0,0	monster	Boneco de Miyabi	1404,3
+ama_dun03,0,0,0,0	monster	Tengu	1405,15

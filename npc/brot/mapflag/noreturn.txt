@@ -46,7 +46,7 @@
 //new_zone04	mapflag	noreturn
 //nif_in	mapflag	noreturn
 //payon_in01	mapflag	noreturn
-//payon_in02	mapflag	noreturn
+//pa2_in02	mapflag	noreturn
 //payon_in03	mapflag	noreturn
 //prt_are_in	mapflag	noreturn
 //prt_are01	mapflag	noreturn

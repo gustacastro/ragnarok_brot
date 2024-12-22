@@ -1,5 +1,5 @@
 //= Conversão Aegis EP12.1
-payon_in02,64,71,4	script	Arqueiro	85,{
+pa2_in02,64,71,4	script	Arqueiro	85,{
 /*
 	if (job_karma != 0)
 	{
